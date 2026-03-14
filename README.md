@@ -30,13 +30,15 @@ The backend scraping engine is under active development:
 - [x] **REST API + WebSocket** — Job CRUD, file tree/content browsing, real-time progress via WebSocket
 - [x] **Frontend scaffold** — Dioxus WASM desktop layout, scraper panel, terminal, API client, dark OS theme
 - [x] **WebSocket integration** — Real-time job progress via WS hook with auto-reconnect, task cancellation, cancel button
-- [ ] **Frontend panels** — File explorer and markdown preview
+- [x] **File explorer** — Recursive tree view with expand/collapse, click-to-open, word count metadata
+- [x] **Markdown preview** — pulldown-cmark rendering with ammonia XSS sanitization, 512KB cap
+- [ ] **AI intelligence** — MiniMax M2.5 for directory structure suggestions and corpus Q&A
 
-**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with WebSocket integration (clippy clean, zero warnings).
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings).
 
 ## Quick Start
 
-> **Note:** Backend is feature-complete. Frontend has WebSocket integration with real-time progress — file explorer and markdown preview are next.
+> **Note:** Backend is feature-complete. Frontend has all core panels (scraper, explorer, preview, terminal) — AI integration is next.
 
 ### Prerequisites
 

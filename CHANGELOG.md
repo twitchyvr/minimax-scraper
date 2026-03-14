@@ -49,3 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Log message cap (500 max) with drain to prevent unbounded memory growth
 - JobCard component with real-time progress bar, status badge, and cancel button
 - Fixed Dioxus.toml: `[web.resource.dev]` section and `[[web.proxy]]` array syntax for Dioxus 0.6
+- File explorer panel with recursive tree view, expand/collapse, and click-to-open (#11)
+- Markdown preview panel with pulldown-cmark rendering and ammonia XSS sanitization
+- 512KB file size cap prevents UI freeze on large markdown files
+- URL-encoded file paths in browse API calls for special character safety
+- Stale preview content cleared on job switch and new file selection
+- Dark theme CSS for explorer tree, markdown headings, code blocks, tables, blockquotes
