@@ -59,3 +59,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Reject symlinks in browse API file endpoint to prevent traversal (#15)
 - Add max tree depth limit (20) to prevent stack overflow from deep nesting (#15)
+- Unescape bold/italic asterisks in table cells — markdownify over-escaped `\*\*text\*\*` (#17)
+- Stream progress updates as each page completes instead of batching 0%→100% (#18)

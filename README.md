@@ -58,7 +58,7 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Run tests (94 passing)
+# Run tests (97 passing)
 pytest
 
 # Type check
