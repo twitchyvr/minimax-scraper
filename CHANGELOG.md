@@ -44,3 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HTTP API client (gloo-net) for all backend endpoints
 - Dark OS theme CSS with CSS variables, monospace terminal, custom scrollbars
 - Global reactive state via Signal<AppState> context provider
+- WebSocket hook (`use_job_websocket`) with auto-reconnect and exponential backoff (#10)
+- Task cancellation on job change prevents leaked background tasks
+- Log message cap (500 max) with drain to prevent unbounded memory growth
+- JobCard component with real-time progress bar, status badge, and cancel button
+- Fixed Dioxus.toml: `[web.resource.dev]` section and `[[web.proxy]]` array syntax for Dioxus 0.6
