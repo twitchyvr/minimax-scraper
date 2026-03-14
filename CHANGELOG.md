@@ -18,3 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MIT License
 - Makefile with unified development commands
 - Docker dev container configuration
+- Backend scaffold: FastAPI app, SQLAlchemy models, Pydantic schemas, async SQLite (#1)
+- Discovery engine with three-strategy cascade: llms.txt → sitemap.xml → sidebar crawl (#2)
+- llms.txt parser with section extraction, relative URL resolution, HTML rejection
+- sitemap.xml parser with defusedxml, recursive sitemap index resolution, segment-aware path filtering
+- Discovery engine orchestrator with automatic client management and strategy fallback
+- 41 discovery tests covering parsers, HTTP mocking, edge cases, and live E2E validation

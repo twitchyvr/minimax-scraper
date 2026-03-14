@@ -20,15 +20,26 @@ A markdown documentation scraper with an OS-like browser UI. Scrapes developer d
 | Storage | Filesystem + SQLite |
 | AI | MiniMax M2.5 (OpenAI-compatible) |
 
+## Current Status
+
+The backend scraping engine is under active development:
+
+- [x] **Backend scaffold** — FastAPI, SQLAlchemy async models, Pydantic schemas, config
+- [x] **Discovery engine** — llms.txt parser, sitemap.xml parser (with recursive index resolution), engine orchestrator
+- [ ] **Scrape engine** — Fetcher, HTML→markdown extractor, directory organizer
+- [ ] **REST API + WebSocket** — Job management, file browsing, real-time progress
+- [ ] **Frontend** — Rust/Dioxus WASM OS-like UI
+
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt in under 1 second.
+
 ## Quick Start
 
-> **Note:** The project is under active development. Setup instructions will be updated as components are built.
+> **Note:** The project is under active development. Full end-to-end usage requires the scrape engine (Issue #3).
 
 ### Prerequisites
 
 - Python 3.12+
-- Rust toolchain with `wasm32-unknown-unknown` target
-- Docker Desktop (for dev container)
+- Rust toolchain with `wasm32-unknown-unknown` target (for frontend, coming later)
 
 ### Development
 
@@ -37,8 +48,20 @@ A markdown documentation scraper with an OS-like browser UI. Scrapes developer d
 git clone https://github.com/twitchyvr/minimax-scraper.git
 cd minimax-scraper
 
-# Start development environment
-make dev
+# Backend setup
+cd backend
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+
+# Run tests (41 passing)
+pytest
+
+# Type check
+mypy --strict app/
+
+# Lint
+ruff check app/ tests/
 ```
 
 ## Architecture
