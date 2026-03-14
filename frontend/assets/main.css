@@ -289,6 +289,36 @@ html, body {
 .status-failed { color: var(--text-error); background: rgba(255, 107, 107, 0.15); }
 .status-cancelled { color: var(--text-warn); background: rgba(255, 217, 61, 0.15); }
 
+.scraper-job-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.scraper-cancel-btn {
+    padding: 2px 8px;
+    border: 1px solid var(--text-error);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-error);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.scraper-cancel-btn:hover {
+    background: rgba(255, 107, 107, 0.15);
+}
+
+.scraper-job-error {
+    margin-top: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: var(--text-error);
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 4px;
+}
+
 .scraper-job-progress {
     display: flex;
     align-items: center;
