@@ -1,11 +1,17 @@
 """Async HTTP fetcher with rate limiting, concurrency control, and retry."""
 
+from __future__ import annotations
+
 import asyncio
 import time
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 import httpx
+
+if TYPE_CHECKING:
+    import collections.abc
 
 _ALLOWED_SCHEMES = {"http", "https"}
 
@@ -146,11 +152,24 @@ class Fetcher:
         tasks = [self.fetch(url) for url in urls]
         return list(await asyncio.gather(*tasks))
 
+    async def fetch_stream(
+        self, urls: list[str]
+    ) -> collections.abc.AsyncIterator[FetchResult]:
+        """Fetch URLs concurrently, yielding results as each completes.
+
+        Unlike fetch_many (which blocks until ALL fetches finish), this
+        yields each FetchResult as soon as its individual fetch completes.
+        This enables real-time progress reporting.
+        """
+        tasks = {asyncio.ensure_future(self.fetch(url)): url for url in urls}
+        for coro in asyncio.as_completed(list(tasks.keys())):
+            yield await coro
+
     async def close(self) -> None:
         """Close the underlying HTTP client."""
         await self.client.aclose()
 
-    async def __aenter__(self) -> "Fetcher":
+    async def __aenter__(self) -> Fetcher:
         return self
 
     async def __aexit__(self, *args: object) -> None:

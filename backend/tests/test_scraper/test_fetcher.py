@@ -86,6 +86,27 @@ class TestFetcher:
             assert fetcher.client is not None
         # Client should be closed after exiting context
 
+    async def test_fetch_stream_yields_as_completed(self) -> None:
+        """fetch_stream yields results incrementally, not all-at-once."""
+        order: list[str] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, text=f"<html>{request.url}</html>")
+
+        fetcher = Fetcher(rate_limit=100.0, max_concurrent=5)
+        fetcher.client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+
+        urls = [f"https://example.com/page{i}" for i in range(5)]
+        async for result in fetcher.fetch_stream(urls):
+            order.append(result.url)
+            assert result.status_code == 200
+
+        # All 5 URLs should be yielded
+        assert len(order) == 5
+        assert set(order) == set(urls)
+
+        await fetcher.close()
+
     async def test_retry_on_server_error(self) -> None:
         attempt = 0
 
