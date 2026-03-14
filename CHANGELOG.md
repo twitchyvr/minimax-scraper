@@ -32,3 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scrape engine orchestrator with path traversal protection and typed async progress callback
 - 33 scraper tests covering fetcher, extractor, and organizer modules
 - E2E validated against live MiniMax docs (3 pages scraped with correct structure)
+- REST API: POST/GET/DELETE /api/jobs, GET /api/jobs/{id}/pages for job lifecycle (#4)
+- File browsing API: GET /api/browse/{id}/tree (recursive file tree), GET /api/browse/{id}/file (raw markdown)
+- WebSocket: WS /api/ws/{job_id} for real-time scrape progress, error, and completion events
+- Concurrent job limit (10 max), sanitized WS error messages, file size limit (10 MB)
+- 21 API tests covering endpoints, error cases, path traversal, and WebSocket

@@ -27,14 +27,14 @@ The backend scraping engine is under active development:
 - [x] **Backend scaffold** — FastAPI, SQLAlchemy async models, Pydantic schemas, config
 - [x] **Discovery engine** — llms.txt parser, sitemap.xml parser (with recursive index resolution), engine orchestrator
 - [x] **Scrape engine** — Async fetcher (rate limiting, retries, SSRF protection), HTML→markdown extractor, directory organizer, path traversal protection
-- [ ] **REST API + WebSocket** — Job management, file browsing, real-time progress
+- [x] **REST API + WebSocket** — Job CRUD, file tree/content browsing, real-time progress via WebSocket
 - [ ] **Frontend** — Rust/Dioxus WASM OS-like UI
 
-**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure.
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests.
 
 ## Quick Start
 
-> **Note:** The project is under active development. Full end-to-end usage requires the scrape engine (Issue #3).
+> **Note:** The backend is feature-complete for MVP. The frontend (Rust/Dioxus WASM) is next.
 
 ### Prerequisites
 
@@ -54,7 +54,7 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Run tests (74 passing)
+# Run tests (94 passing)
 pytest
 
 # Type check
