@@ -4,7 +4,9 @@
 use gloo_net::http::Request;
 use web_sys::js_sys;
 
-use super::types::{CreateJobRequest, FileContentResponse, FileTreeNode, JobResponse};
+use super::types::{
+    ChatRequest, ChatResponse, CreateJobRequest, FileContentResponse, FileTreeNode, JobResponse,
+};
 
 const BASE_URL: &str = "/api";
 
@@ -80,6 +82,34 @@ pub async fn get_file_tree(job_id: &str) -> Result<Vec<FileTreeNode>, String> {
 
     if resp.ok() {
         resp.json().await.map_err(|e| format!("Parse error: {e}"))
+    } else {
+        Err(format!("HTTP {}", resp.status()))
+    }
+}
+
+/// Send a question to the AI chat endpoint.
+pub async fn chat(job_id: &str, question: &str) -> Result<ChatResponse, String> {
+    let body = ChatRequest {
+        question: question.to_string(),
+        job_id: job_id.to_string(),
+        top_k: None,
+    };
+
+    let resp = Request::post(&format!("{BASE_URL}/ai/chat"))
+        .json(&body)
+        .map_err(|e| format!("Serialize error: {e}"))?
+        .send()
+        .await
+        .map_err(|e| format!("Network error: {e}"))?;
+
+    if resp.ok() {
+        resp.json().await.map_err(|e| format!("Parse error: {e}"))
+    } else if resp.status() == 503 {
+        Err("AI not configured. Set MINIMAX_API_KEY on the server.".to_string())
+    } else if resp.status() == 404 {
+        Err("Job not found.".to_string())
+    } else if resp.status() == 400 {
+        Err("Job has no scraped output yet.".to_string())
     } else {
         Err(format!("HTTP {}", resp.status()))
     }

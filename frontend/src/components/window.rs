@@ -24,6 +24,7 @@ pub fn Window(title: String, panel_key: String, children: Element) -> Element {
                                 "explorer" => state.write().panels.explorer = false,
                                 "preview" => state.write().panels.preview = false,
                                 "terminal" => state.write().panels.terminal = false,
+                                "ai_chat" => state.write().panels.ai_chat = false,
                                 _ => {}
                             }
                         },

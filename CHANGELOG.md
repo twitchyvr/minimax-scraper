@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Async LLM client wrapper for MiniMax M2.5 via OpenAI-compatible API (#22)
+- RAG-based Q&A chat module with BM25 search over scraped documentation corpus (#24)
+- REST API endpoint `POST /api/ai/chat` for AI-powered Q&A with source citations (#25)
+- `ChatRequest`/`ChatResponse` Pydantic schemas with field validation
+- Corpus index caching per job and shared LLM client with lazy initialization
+- AI-powered directory structure suggestions with LLM fallback to heuristics (#23)
+- Frontend AI Chat panel with message bubbles, source citations, and taskbar toggle (#26)
+- 54 AI tests covering LLM client, BM25 search, RAG pipeline, API endpoint, and structure suggestions
+
 ## [0.1.0] — 2026-03-14
 
 ### Added

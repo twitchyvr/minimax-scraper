@@ -2,6 +2,7 @@
 
 use dioxus::prelude::*;
 
+use crate::components::ai_chat::AiChatPanel;
 use crate::components::explorer::ExplorerPanel;
 use crate::components::preview::PreviewPanel;
 use crate::components::scraper::ScraperPanel;
@@ -44,6 +45,13 @@ pub fn Desktop() -> Element {
                         title: "Terminal",
                         panel_key: "terminal",
                         TerminalPanel {}
+                    }
+                }
+                if state.read().panels.ai_chat {
+                    Window {
+                        title: "AI Chat",
+                        panel_key: "ai_chat",
+                        AiChatPanel {}
                     }
                 }
             }
@@ -96,6 +104,14 @@ fn Taskbar() -> Element {
                         state.write().panels.preview = !current;
                     },
                     "Preview"
+                }
+                button {
+                    class: if state.read().panels.ai_chat { "taskbar-btn active" } else { "taskbar-btn" },
+                    onclick: move |_| {
+                        let current = state.read().panels.ai_chat;
+                        state.write().panels.ai_chat = !current;
+                    },
+                    "AI Chat"
                 }
             }
             div { class: "taskbar-status",
