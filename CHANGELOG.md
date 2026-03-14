@@ -55,3 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - URL-encoded file paths in browse API calls for special character safety
 - Stale preview content cleared on job switch and new file selection
 - Dark theme CSS for explorer tree, markdown headings, code blocks, tables, blockquotes
+
+### Fixed
+- Reject symlinks in browse API file endpoint to prevent traversal (#15)
+- Add max tree depth limit (20) to prevent stack overflow from deep nesting (#15)
