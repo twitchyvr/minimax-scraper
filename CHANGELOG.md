@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Frontend compile error on stable Rust: replaced unstable `let_chains` syntax with tuple pattern match in explorer.rs (#32)
+- Backend `pip install -e '.[dev]'` failure: excluded `output/` from setuptools package discovery (#33)
+- Added `types-defusedxml` to dev dependencies for mypy --strict compatibility (#33)
+
 ## [0.2.0] — 2026-03-14
 
 ### Added
