@@ -12,7 +12,7 @@ from app.ai.chat import CorpusIndex, ask
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 from app.ai.client import LLMAPIError, LLMClient, LLMNotConfiguredError
-from app.models.db import ScrapeJob
+from app.models.db import JobStatus, ScrapeJob
 from app.models.schemas import ChatRequest, ChatResponse
 from app.storage.database import get_session
 
@@ -57,7 +57,7 @@ async def chat(
     if not job.output_dir:
         raise HTTPException(status_code=400, detail="Job has no output directory")
 
-    if job.status != "complete":
+    if job.status != JobStatus.COMPLETE:
         raise HTTPException(
             status_code=400,
             detail=f"Job is not complete (status: {job.status}). Wait for scraping to finish.",
