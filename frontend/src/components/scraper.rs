@@ -30,9 +30,16 @@ pub fn ScraperPanel() -> Element {
     let active_job_id = state.read().active_job_id.clone();
     use_job_websocket(active_job_id);
 
+    // Validate URL for submit button state
+    let url_valid = {
+        let u = url_input.read();
+        u.starts_with("http://") || u.starts_with("https://")
+    };
+
     let on_submit = move |_| {
         let url = url_input.read().clone();
-        if url.is_empty() {
+        if !url.starts_with("http://") && !url.starts_with("https://") {
+            error_msg.set(Some("URL must start with http:// or https://".to_string()));
             return;
         }
         is_loading.set(true);
@@ -69,7 +76,7 @@ pub fn ScraperPanel() -> Element {
                 }
                 button {
                     class: "scraper-btn",
-                    disabled: *is_loading.read(),
+                    disabled: *is_loading.read() || !url_valid,
                     onclick: on_submit,
                     if *is_loading.read() { "Scraping..." } else { "Scrape" }
                 }
