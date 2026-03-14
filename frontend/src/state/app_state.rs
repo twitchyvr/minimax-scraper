@@ -9,6 +9,7 @@ pub struct OpenPanels {
     pub explorer: bool,
     pub preview: bool,
     pub terminal: bool,
+    pub ai_chat: bool,
 }
 
 impl Default for OpenPanels {
@@ -18,6 +19,7 @@ impl Default for OpenPanels {
             explorer: false,
             preview: false,
             terminal: true,
+            ai_chat: false,
         }
     }
 }

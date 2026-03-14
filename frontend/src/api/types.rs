@@ -44,6 +44,28 @@ pub struct FileContentResponse {
     pub content: String,
 }
 
+/// Request to send a chat message to AI.
+#[derive(Serialize, Clone, Debug)]
+pub struct ChatRequest {
+    pub question: String,
+    pub job_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub top_k: Option<u32>,
+}
+
+/// Response from the AI chat endpoint.
+#[derive(Deserialize, Clone, Debug)]
+pub struct ChatResponse {
+    pub answer: String,
+    pub sources: Vec<String>,
+    #[serde(default)]
+    pub model: String,
+    #[serde(default)]
+    pub prompt_tokens: u32,
+    #[serde(default)]
+    pub completion_tokens: u32,
+}
+
 /// WebSocket message from the backend.
 #[derive(Deserialize, Clone, Debug)]
 pub struct WsMessage {
