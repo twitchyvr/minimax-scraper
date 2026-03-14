@@ -1,0 +1,16 @@
+[application]
+name = "minimax-scraper"
+default_platform = "web"
+
+[web.app]
+title = "MiniMax Scraper"
+
+[web.watcher]
+reload_html = true
+watch_path = ["src", "assets"]
+
+[web.resource.dev]
+style = ["assets/main.css"]
+
+[[web.proxy]]
+backend = "http://localhost:8000/api"

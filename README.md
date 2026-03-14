@@ -20,15 +20,30 @@ A markdown documentation scraper with an OS-like browser UI. Scrapes developer d
 | Storage | Filesystem + SQLite |
 | AI | MiniMax M2.5 (OpenAI-compatible) |
 
+## Current Status
+
+The backend scraping engine is under active development:
+
+- [x] **Backend scaffold** — FastAPI, SQLAlchemy async models, Pydantic schemas, config
+- [x] **Discovery engine** — llms.txt parser, sitemap.xml parser (with recursive index resolution), engine orchestrator
+- [x] **Scrape engine** — Async fetcher (rate limiting, retries, SSRF protection), HTML→markdown extractor, directory organizer, path traversal protection
+- [x] **REST API + WebSocket** — Job CRUD, file tree/content browsing, real-time progress via WebSocket
+- [x] **Frontend scaffold** — Dioxus WASM desktop layout, scraper panel, terminal, API client, dark OS theme
+- [x] **WebSocket integration** — Real-time job progress via WS hook with auto-reconnect, task cancellation, cancel button
+- [x] **File explorer** — Recursive tree view with expand/collapse, click-to-open, word count metadata
+- [x] **Markdown preview** — pulldown-cmark rendering with ammonia XSS sanitization, 512KB cap
+- [ ] **AI intelligence** — MiniMax M2.5 for directory structure suggestions and corpus Q&A
+
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings).
+
 ## Quick Start
 
-> **Note:** The project is under active development. Setup instructions will be updated as components are built.
+> **Note:** Backend is feature-complete. Frontend has all core panels (scraper, explorer, preview, terminal) — AI integration is next.
 
 ### Prerequisites
 
 - Python 3.12+
-- Rust toolchain with `wasm32-unknown-unknown` target
-- Docker Desktop (for dev container)
+- Rust toolchain with `wasm32-unknown-unknown` target (for frontend, coming later)
 
 ### Development
 
@@ -37,8 +52,20 @@ A markdown documentation scraper with an OS-like browser UI. Scrapes developer d
 git clone https://github.com/twitchyvr/minimax-scraper.git
 cd minimax-scraper
 
-# Start development environment
-make dev
+# Backend setup
+cd backend
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+
+# Run tests (97 passing)
+pytest
+
+# Type check
+mypy --strict app/
+
+# Lint
+ruff check app/ tests/
 ```
 
 ## Architecture
