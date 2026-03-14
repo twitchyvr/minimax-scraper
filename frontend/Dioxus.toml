@@ -1,0 +1,17 @@
+[application]
+name = "minimax-scraper"
+default_platform = "web"
+
+[web.app]
+title = "MiniMax Scraper"
+
+[web.watcher]
+reload_html = true
+watch_path = ["src", "assets"]
+
+[web.resource]
+style = ["assets/main.css"]
+
+[web.proxy]
+# Proxy API requests to the Python backend during development
+"/api" = "http://localhost:8000"
