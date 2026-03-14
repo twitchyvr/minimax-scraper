@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from httpx import AsyncClient
 
+from app.api.ai import _MAX_INDEX_CACHE_SIZE, _get_corpus_index, _index_cache
 from app.models.db import JobStatus, ScrapeJob
 
 
@@ -187,3 +188,68 @@ class TestChatEndpoint:
             json={"question": "test", "job_id": "some-id", "top_k": 25},
         )
         assert resp.status_code == 422
+
+
+class TestCorpusIndexCache:
+    """Tests for LRU eviction of corpus index cache."""
+
+    def test_cache_returns_same_index_on_hit(self, tmp_path: Path) -> None:
+        """Cache hit should return the same object without rebuilding."""
+        _index_cache.clear()
+        d = tmp_path / "job-1"
+        d.mkdir()
+        (d / "doc.md").write_text("# Hello")
+
+        idx1 = _get_corpus_index(str(d))
+        idx2 = _get_corpus_index(str(d))
+        assert idx1 is idx2
+
+        _index_cache.clear()
+
+    def test_cache_evicts_oldest_entry(self, tmp_path: Path) -> None:
+        """When cache exceeds max size, the oldest (least recently used) entry is evicted."""
+        _index_cache.clear()
+
+        dirs: list[str] = []
+        for i in range(_MAX_INDEX_CACHE_SIZE + 1):
+            d = tmp_path / f"job-{i}"
+            d.mkdir()
+            (d / "doc.md").write_text(f"# Doc {i}")
+            dirs.append(str(d))
+            _get_corpus_index(str(d))
+
+        # Cache should be at max size, not max + 1
+        assert len(_index_cache) == _MAX_INDEX_CACHE_SIZE
+        # The first entry (job-0) should have been evicted
+        assert dirs[0] not in _index_cache
+        # The last entry should still be present
+        assert dirs[-1] in _index_cache
+
+        _index_cache.clear()
+
+    def test_cache_hit_refreshes_access_order(self, tmp_path: Path) -> None:
+        """Accessing a cached entry should move it to the end (most recent)."""
+        _index_cache.clear()
+
+        dirs: list[str] = []
+        for i in range(_MAX_INDEX_CACHE_SIZE):
+            d = tmp_path / f"job-{i}"
+            d.mkdir()
+            (d / "doc.md").write_text(f"# Doc {i}")
+            dirs.append(str(d))
+            _get_corpus_index(str(d))
+
+        # Access the first entry to refresh it
+        _get_corpus_index(dirs[0])
+
+        # Now add one more — should evict job-1 (the true oldest), not job-0
+        overflow = tmp_path / "job-overflow"
+        overflow.mkdir()
+        (overflow / "doc.md").write_text("# Overflow")
+        _get_corpus_index(str(overflow))
+
+        assert len(_index_cache) == _MAX_INDEX_CACHE_SIZE
+        assert dirs[0] in _index_cache  # was refreshed, should survive
+        assert dirs[1] not in _index_cache  # true oldest, should be evicted
+
+        _index_cache.clear()
