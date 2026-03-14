@@ -84,9 +84,7 @@ class TestCorpusIndex:
         assert len(index.chunks) == 1
 
     def test_search_returns_relevant_results(self, tmp_path: Path) -> None:
-        (tmp_path / "api.md").write_text(
-            "# REST API\nThe REST API supports JSON requests."
-        )
+        (tmp_path / "api.md").write_text("# REST API\nThe REST API supports JSON requests.")
         (tmp_path / "audio.md").write_text(
             "# Audio\nText to speech synthesis using neural networks."
         )

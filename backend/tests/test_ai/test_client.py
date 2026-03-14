@@ -86,9 +86,7 @@ class TestLLMClientComplete:
         client._client = mock_openai
 
         messages = [LLMMessage(role="user", content="Hi")]
-        await client.complete(
-            messages, temperature=0.1, max_tokens=100, model="custom-model"
-        )
+        await client.complete(messages, temperature=0.1, max_tokens=100, model="custom-model")
 
         call_kwargs = mock_openai.chat.completions.create.call_args[1]
         assert call_kwargs["model"] == "custom-model"
@@ -164,9 +162,7 @@ class TestLLMClientStream:
         client._client = mock_openai
 
         collected: list[str] = []
-        async for chunk_text in client.stream(
-            [LLMMessage(role="user", content="Hi")]
-        ):
+        async for chunk_text in client.stream([LLMMessage(role="user", content="Hi")]):
             collected.append(chunk_text)
 
         assert collected == ["Hello", ", ", "world", "!"]
