@@ -28,7 +28,7 @@ pub fn ExplorerPanel() -> Element {
 
     // Load tree when we have a new completed job to browse.
     let should_load = browse_job_id.is_some() && browse_job_id != *loaded_job.read();
-    if should_load && let Some(job_id) = browse_job_id.clone() {
+    if let (true, Some(job_id)) = (should_load, browse_job_id.clone()) {
         loaded_job.set(Some(job_id.clone()));
         loading.set(true);
         spawn(async move {
