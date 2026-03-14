@@ -1,0 +1,19 @@
+{
+  "name": "minimax-scraper Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
+        "rust-lang.rust-analyzer",
+        "ms-azuretools.vscode-docker",
+        "ms-playwright.playwright"
+      ]
+    }
+  },
+  "postCreateCommand": "cd backend && pip install -e '.[dev]' && cd ../frontend && rustup target add wasm32-unknown-unknown && cargo install dioxus-cli"
+}
