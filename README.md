@@ -37,7 +37,7 @@ The backend scraping engine is under active development:
 - [x] **AI structure suggestions** — MiniMax M2.5 for directory structure optimization with heuristic fallback
 - [x] **Frontend AI chat panel** — Chat window with message bubbles, source citations, and loading states
 
-**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings). AI chat and structure suggestions tested with mocked LLM — 151 tests passing.
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings). AI chat and structure suggestions tested with mocked LLM — 154 tests passing.
 
 ## Quick Start
 
