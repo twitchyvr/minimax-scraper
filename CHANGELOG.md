@@ -37,3 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - WebSocket: WS /api/ws/{job_id} for real-time scrape progress, error, and completion events
 - Concurrent job limit (10 max), sanitized WS error messages, file size limit (10 MB)
 - 21 API tests covering endpoints, error cases, path traversal, and WebSocket
+- Rust/Dioxus WASM frontend scaffold with OS-like desktop layout (#9)
+- Desktop workspace with taskbar panel toggles and window chrome (title bar, close)
+- Scraper panel: URL input, job creation via REST, job list with progress bars
+- Terminal panel: color-coded log viewer (ERROR/WARN/INFO)
+- HTTP API client (gloo-net) for all backend endpoints
+- Dark OS theme CSS with CSS variables, monospace terminal, custom scrollbars
+- Global reactive state via Signal<AppState> context provider
