@@ -5,6 +5,12 @@ import json
 from starlette.testclient import TestClient
 
 from app.api.ws import _connections, broadcast
+from app.models.schemas import (
+    WsCompleteMessage,
+    WsErrorMessage,
+    WsMessageType,
+    WsProgressMessage,
+)
 
 
 class TestWebSocket:
@@ -38,8 +44,14 @@ class TestBroadcast:
         messages: list[dict[str, object]] = []
 
         with client.websocket_connect("/api/ws/broadcast-test") as ws:
-            # Send a broadcast
-            await broadcast("broadcast-test", {"type": "progress", "scraped": 5, "total": 10})
+            # Send a broadcast using typed message
+            msg = WsProgressMessage(
+                job_id="broadcast-test",
+                scraped=5,
+                total=10,
+                current_url="https://example.com/page",
+            )
+            await broadcast("broadcast-test", msg.model_dump())
 
             # Receive the message
             data = ws.receive_text()
@@ -48,3 +60,42 @@ class TestBroadcast:
         assert len(messages) == 1
         assert messages[0]["type"] == "progress"
         assert messages[0]["scraped"] == 5
+        assert messages[0]["current_url"] == "https://example.com/page"
+
+
+class TestWsMessageTypes:
+    """Tests for typed WebSocket message models."""
+
+    def test_message_type_enum_values(self) -> None:
+        """WsMessageType enum has the expected string values."""
+        assert WsMessageType.PROGRESS == "progress"
+        assert WsMessageType.COMPLETE == "complete"
+        assert WsMessageType.ERROR == "error"
+
+    def test_progress_message_serialization(self) -> None:
+        """WsProgressMessage serializes with the correct type field."""
+        msg = WsProgressMessage(
+            job_id="job-1", scraped=3, total=10, current_url="https://example.com"
+        )
+        data = msg.model_dump()
+        assert data["type"] == "progress"
+        assert data["job_id"] == "job-1"
+        assert data["scraped"] == 3
+        assert data["total"] == 10
+        assert data["current_url"] == "https://example.com"
+
+    def test_complete_message_serialization(self) -> None:
+        """WsCompleteMessage serializes with status defaulting to 'complete'."""
+        msg = WsCompleteMessage(job_id="job-2", total_pages=42, output_dir="/output/job-2")
+        data = msg.model_dump()
+        assert data["type"] == "complete"
+        assert data["status"] == "complete"
+        assert data["total_pages"] == 42
+        assert data["output_dir"] == "/output/job-2"
+
+    def test_error_message_serialization(self) -> None:
+        """WsErrorMessage serializes with type and message."""
+        msg = WsErrorMessage(job_id="job-3", message="Scrape failed: TimeoutError")
+        data = msg.model_dump()
+        assert data["type"] == "error"
+        assert data["message"] == "Scrape failed: TimeoutError"
