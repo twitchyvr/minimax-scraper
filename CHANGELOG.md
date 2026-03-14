@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-03-14
+
 ### Added
 - Client-side URL validation in scraper panel — disables button for invalid URLs, shows inline error (#35)
 - LRU eviction for AI corpus index cache — max 10 entries, oldest evicted at capacity (#39)
+- 10 new tests: WS enum serialization, LRU eviction, AI error handling (161 total)
 
 ### Changed
-- WebSocket messages use typed enums: `WsMessageType` StrEnum + `Literal` discriminators on backend, serde tagged enum on frontend (#36)
+- WebSocket messages use typed enums: `WsMessageType` StrEnum + `Literal` discriminators on backend, serde internally-tagged enum on frontend (#36)
 
 ### Fixed
 - Frontend compile error on stable Rust: replaced unstable `let_chains` syntax with tuple pattern match in explorer.rs (#32)
@@ -20,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `types-defusedxml` to dev dependencies for mypy --strict compatibility (#33)
 - AI chat endpoint returns 502 on LLM API errors instead of unhandled 500 (#37)
 - AI chat endpoint rejects non-complete jobs (400) to prevent partial corpus indexing (#37)
-- Added 3 new AI API tests: LLM error handling, job status validation, top_k bounds (154 total) (#37)
 
 ## [0.2.0] — 2026-03-14
 
