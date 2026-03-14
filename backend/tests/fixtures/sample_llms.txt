@@ -1,0 +1,17 @@
+# MiniMax Platform
+
+> MiniMax AI platform documentation for developers.
+
+## Getting Started
+
+- [Models Introduction](https://platform.minimax.io/docs/guides/models-intro): Overview of available AI models
+- [Quickstart Guide](/docs/guides/quickstart): Get up and running in 5 minutes
+
+## API Reference
+
+- [Text Chat](https://platform.minimax.io/docs/api-reference/text/chat): Text generation chat API
+- [Video Generation](https://platform.minimax.io/docs/api-reference/video/text-to-video): Generate videos from text prompts
+
+## Solutions
+
+- [Audiobook Workshop](https://platform.minimax.io/docs/solutions/audiobook): Build audiobooks with AI voices
