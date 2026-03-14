@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Frontend CSS not loading — added missing `asset_dir = "assets"` to Dioxus.toml (#45)
+- Version strings aligned to 0.2.1 across all backend and frontend files (#45)
+- Health check test updated to expect v0.2.1 (#45)
+
 ## [0.2.1] — 2026-03-14
 
 ### Added
