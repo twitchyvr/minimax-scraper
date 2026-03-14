@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Client-side URL validation in scraper panel — disables button for invalid URLs, shows inline error (#35)
+
 ### Fixed
 - Frontend compile error on stable Rust: replaced unstable `let_chains` syntax with tuple pattern match in explorer.rs (#32)
 - Backend `pip install -e '.[dev]'` failure: excluded `output/` from setuptools package discovery (#33)
