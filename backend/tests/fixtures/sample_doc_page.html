@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Models Introduction | MiniMax Docs</title>
+</head>
+<body>
+  <nav class="sidebar">
+    <a href="/docs">Home</a>
+    <a href="/docs/api">API</a>
+  </nav>
+  <header>
+    <div class="breadcrumb">Home > Guides > Models</div>
+  </header>
+  <article>
+    <h1>Models Introduction</h1>
+    <p>MiniMax provides several AI models for different use cases.</p>
+
+    <h2>Available Models</h2>
+    <p>Choose the right model for your task:</p>
+
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Use Case</th><th>Context</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MiniMax-M1</td><td>General chat</td><td>128k tokens</td></tr>
+        <tr><td>MiniMax-M2.5</td><td>Advanced reasoning</td><td>256k tokens</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Quick Start</h2>
+    <p>Here's a simple example:</p>
+
+    <pre><code class="language-python">from openai import OpenAI
+
+client = OpenAI(base_url="https://api.minimax.chat/v1")
+response = client.chat.completions.create(
+    model="MiniMax-M1",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+print(response.choices[0].message.content)
+</code></pre>
+
+    <blockquote class="warning">
+      <p>Make sure to set your API key before making requests.</p>
+    </blockquote>
+
+    <blockquote class="note">
+      <p>All models support streaming responses.</p>
+    </blockquote>
+
+    <h2>Next Steps</h2>
+    <p>Check out the <a href="/docs/api-reference">API Reference</a> for full details.</p>
+  </article>
+  <footer>
+    <p>&copy; 2025 MiniMax</p>
+  </footer>
+</body>
+</html>
