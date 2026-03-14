@@ -66,17 +66,29 @@ pub struct ChatResponse {
     pub completion_tokens: u32,
 }
 
-/// WebSocket message from the backend.
+/// Typed WebSocket message from the backend.
+///
+/// Uses serde's internally-tagged enum representation so that
+/// `{"type": "progress", ...}` deserializes into `WsMessage::Progress { .. }`.
 #[derive(Deserialize, Clone, Debug)]
-pub struct WsMessage {
-    #[serde(rename = "type")]
-    pub msg_type: String,
-    pub job_id: Option<String>,
-    pub message: Option<String>,
-    pub scraped: Option<u32>,
-    pub total: Option<u32>,
-    pub current_url: Option<String>,
-    pub status: Option<String>,
-    pub total_pages: Option<u32>,
-    pub output_dir: Option<String>,
+#[serde(tag = "type")]
+pub enum WsMessage {
+    /// Real-time scrape progress update.
+    #[serde(rename = "progress")]
+    Progress {
+        job_id: String,
+        scraped: u32,
+        total: u32,
+        current_url: String,
+    },
+    /// Job completed successfully.
+    #[serde(rename = "complete")]
+    Complete {
+        job_id: String,
+        total_pages: u32,
+        output_dir: String,
+    },
+    /// Job encountered an error.
+    #[serde(rename = "error")]
+    Error { job_id: String, message: String },
 }

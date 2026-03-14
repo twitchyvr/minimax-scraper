@@ -1,6 +1,8 @@
 """Pydantic request/response schemas."""
 
 from datetime import datetime
+from enum import StrEnum
+from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl, computed_field
 
@@ -64,22 +66,39 @@ class FileTreeNode(BaseModel):
     word_count: int = 0
 
 
-class WsMessage(BaseModel):
-    """WebSocket message types."""
+class WsMessageType(StrEnum):
+    """Typed WebSocket message types."""
 
-    type: str  # progress, log, page_scraped, error, complete
-    job_id: str | None = None
-    message: str | None = None
-    level: str | None = None  # info, warn, error
-    scraped: int | None = None
-    total: int | None = None
-    current_url: str | None = None
-    url: str | None = None
-    title: str | None = None
-    word_count: int | None = None
-    status: str | None = None
-    total_pages: int | None = None
-    output_dir: str | None = None
+    PROGRESS = "progress"
+    COMPLETE = "complete"
+    ERROR = "error"
+
+
+class WsProgressMessage(BaseModel):
+    """WebSocket progress update during scraping."""
+
+    type: Literal["progress"] = "progress"
+    job_id: str
+    scraped: int
+    total: int
+    current_url: str
+
+
+class WsCompleteMessage(BaseModel):
+    """WebSocket job completion notification."""
+
+    type: Literal["complete"] = "complete"
+    job_id: str
+    total_pages: int
+    output_dir: str
+
+
+class WsErrorMessage(BaseModel):
+    """WebSocket job error notification."""
+
+    type: Literal["error"] = "error"
+    job_id: str
+    message: str
 
 
 class ChatRequest(BaseModel):
@@ -111,4 +130,4 @@ class HealthResponse(BaseModel):
     """Health check response."""
 
     status: str = "ok"
-    version: str = "0.1.0"
+    version: str = "0.2.1"

@@ -138,13 +138,18 @@ async fn listen_ws(
 }
 
 /// Dispatch a parsed WebSocket message to update application state.
+///
+/// Uses exhaustive pattern matching on the `WsMessage` enum — the compiler
+/// ensures every variant is handled and every field is present (no more
+/// `unwrap_or` on Optional fields).
 fn handle_ws_message(msg: WsMessage, job_id: &str, state: &mut Signal<AppState>) {
-    match msg.msg_type.as_str() {
-        "progress" => {
-            let scraped = msg.scraped.unwrap_or(0);
-            let total = msg.total.unwrap_or(0);
-            let current_url = msg.current_url.clone().unwrap_or_default();
-
+    match msg {
+        WsMessage::Progress {
+            scraped,
+            total,
+            current_url,
+            ..
+        } => {
             let mut s = state.write();
             if let Some(job) = s.jobs.iter_mut().find(|j| j.id == job_id) {
                 job.scraped_pages = scraped;
@@ -164,37 +169,31 @@ fn handle_ws_message(msg: WsMessage, job_id: &str, state: &mut Signal<AppState>)
                 }
             }
         }
-        "complete" => {
-            let total = msg.total_pages.unwrap_or(0);
-
+        WsMessage::Complete {
+            total_pages,
+            output_dir,
+            ..
+        } => {
             let mut s = state.write();
             if let Some(job) = s.jobs.iter_mut().find(|j| j.id == job_id) {
                 job.status = "complete".to_string();
-                job.total_pages = total;
-                job.scraped_pages = total;
+                job.total_pages = total_pages;
+                job.scraped_pages = total_pages;
                 job.progress_pct = 100.0;
-                job.output_dir = msg.output_dir.clone();
+                job.output_dir = Some(output_dir.clone());
             }
             s.log_messages.push(format!(
-                "[INFO] Job {job_id} complete — {total} pages scraped"
+                "[INFO] Job {job_id} complete — {total_pages} pages scraped"
             ));
         }
-        "error" => {
-            let error_msg = msg
-                .message
-                .clone()
-                .unwrap_or_else(|| "Unknown error".to_string());
-
+        WsMessage::Error { message, .. } => {
             let mut s = state.write();
             if let Some(job) = s.jobs.iter_mut().find(|j| j.id == job_id) {
                 job.status = "failed".to_string();
-                job.error_message = Some(error_msg.clone());
+                job.error_message = Some(message.clone());
             }
             s.log_messages
-                .push(format!("[ERROR] Job {job_id}: {error_msg}"));
-        }
-        other => {
-            push_log(state, format!("[WARN] Unknown WS message type: {other}"));
+                .push(format!("[ERROR] Job {job_id}: {message}"));
         }
     }
 }
