@@ -2,6 +2,8 @@
 
 use dioxus::prelude::*;
 
+use crate::components::explorer::ExplorerPanel;
+use crate::components::preview::PreviewPanel;
 use crate::components::scraper::ScraperPanel;
 use crate::components::terminal::TerminalPanel;
 use crate::components::window::Window;
@@ -21,6 +23,20 @@ pub fn Desktop() -> Element {
                         title: "Scraper",
                         panel_key: "scraper",
                         ScraperPanel {}
+                    }
+                }
+                if state.read().panels.explorer {
+                    Window {
+                        title: "Explorer",
+                        panel_key: "explorer",
+                        ExplorerPanel {}
+                    }
+                }
+                if state.read().panels.preview {
+                    Window {
+                        title: "Preview",
+                        panel_key: "preview",
+                        PreviewPanel {}
                     }
                 }
                 if state.read().panels.terminal {

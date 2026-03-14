@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 
 use gloo_net::http::Request;
+use web_sys::js_sys;
 
 use super::types::{CreateJobRequest, FileContentResponse, FileTreeNode, JobResponse};
 
@@ -86,10 +87,13 @@ pub async fn get_file_tree(job_id: &str) -> Result<Vec<FileTreeNode>, String> {
 
 /// Get the content of a specific file.
 pub async fn get_file_content(job_id: &str, path: &str) -> Result<FileContentResponse, String> {
-    let resp = Request::get(&format!("{BASE_URL}/browse/{job_id}/file?path={path}"))
-        .send()
-        .await
-        .map_err(|e| format!("Network error: {e}"))?;
+    let encoded_path = js_sys::encode_uri_component(path);
+    let resp = Request::get(&format!(
+        "{BASE_URL}/browse/{job_id}/file?path={encoded_path}"
+    ))
+    .send()
+    .await
+    .map_err(|e| format!("Network error: {e}"))?;
 
     if resp.ok() {
         resp.json().await.map_err(|e| format!("Parse error: {e}"))
