@@ -35,13 +35,13 @@ The backend scraping engine is under active development:
 - [x] **AI client + RAG chat** — LLM client wrapper, BM25 search, RAG Q&A with source citations
 - [x] **AI REST API** — `POST /api/ai/chat` endpoint with corpus caching and graceful 503 on missing key
 - [x] **AI structure suggestions** — MiniMax M2.5 for directory structure optimization with heuristic fallback
-- [ ] **Frontend AI chat panel** — Chat window in the browser UI
+- [x] **Frontend AI chat panel** — Chat window with message bubbles, source citations, and loading states
 
 **Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings). AI chat and structure suggestions tested with mocked LLM — 151 tests passing.
 
 ## Quick Start
 
-> **Note:** Backend is feature-complete. Frontend has all core panels (scraper, explorer, preview, terminal) — AI integration is next.
+> **Note:** Backend and frontend are feature-complete for v0.2.0. All panels operational including AI chat.
 
 ### Prerequisites
 
