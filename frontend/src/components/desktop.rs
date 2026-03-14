@@ -115,7 +115,7 @@ fn Taskbar() -> Element {
                 }
             }
             div { class: "taskbar-status",
-                "v0.1.0"
+                "v0.2.1"
             }
         }
     }
