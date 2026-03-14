@@ -34,10 +34,10 @@ The backend scraping engine is under active development:
 - [x] **Markdown preview** — pulldown-cmark rendering with ammonia XSS sanitization, 512KB cap
 - [x] **AI client + RAG chat** — LLM client wrapper, BM25 search, RAG Q&A with source citations
 - [x] **AI REST API** — `POST /api/ai/chat` endpoint with corpus caching and graceful 503 on missing key
-- [ ] **AI structure suggestions** — MiniMax M2.5 for directory structure optimization
+- [x] **AI structure suggestions** — MiniMax M2.5 for directory structure optimization with heuristic fallback
 - [ ] **Frontend AI chat panel** — Chat window in the browser UI
 
-**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings). AI chat tested with mocked LLM — 133 tests passing.
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure. All API endpoints verified via E2E tests. Frontend compiles to WASM with full panel suite (clippy clean, zero warnings). AI chat and structure suggestions tested with mocked LLM — 151 tests passing.
 
 ## Quick Start
 
@@ -61,7 +61,7 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Run tests (133 passing)
+# Run tests (151 passing)
 pytest
 
 # Type check
