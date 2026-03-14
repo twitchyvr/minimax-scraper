@@ -251,6 +251,12 @@ def _title_from_url(url: str) -> str:
 
 def _clean_markdown(text: str) -> str:
     """Post-process markdown to clean up artifacts."""
+    # Unescape backslash-escaped asterisks that form valid bold/italic patterns.
+    # markdownify over-escapes * inside table cells, producing \*\*text\*\* instead
+    # of **text**.  We restore \*\* pairs first (bold), then lone \* pairs (italic).
+    text = re.sub(r"\\\*\\\*(.+?)\\\*\\\*", r"**\1**", text)
+    text = re.sub(r"\\\*(.+?)\\\*", r"*\1*", text)
+
     # Remove trailing whitespace on each line (must run before blank line collapse)
     text = "\n".join(line.rstrip() for line in text.splitlines())
 

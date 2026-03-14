@@ -89,3 +89,24 @@ class TestExtractContent:
         html = "<html><body><p>Hello</p></body></html>"
         result = extract_content(html, url="https://example.com/page")
         assert result.url == "https://example.com/page"
+
+    def test_unescapes_bold_in_table_cells(self) -> None:
+        html = (
+            "<html><body><article><table><tr>"
+            "<th><strong>Name</strong></th><th><strong>Value</strong></th>"
+            "</tr><tr>"
+            "<td><strong>Bold cell</strong></td><td>Plain</td>"
+            "</tr></table></article></body></html>"
+        )
+        result = extract_content(html)
+        assert "\\*\\*" not in result.markdown
+        assert "**Name**" in result.markdown or "**Bold cell**" in result.markdown
+
+    def test_unescapes_italic_in_table_cells(self) -> None:
+        html = (
+            "<html><body><article><table><tr>"
+            "<td><em>italic text</em></td><td>plain</td>"
+            "</tr></table></article></body></html>"
+        )
+        result = extract_content(html)
+        assert "\\*" not in result.markdown
