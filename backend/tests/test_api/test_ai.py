@@ -117,3 +117,73 @@ class TestChatEndpoint:
             json={"question": "", "job_id": "some-id"},
         )
         assert resp.status_code == 422
+
+    async def test_chat_returns_502_on_llm_api_error(
+        self, client: AsyncClient, tmp_path: Path
+    ) -> None:
+        import app.storage.database as db_module
+
+        async with db_module.async_session() as session:
+            job = ScrapeJob(
+                url="https://example.com",
+                status=JobStatus.COMPLETE,
+                output_dir=str(tmp_path),
+            )
+            session.add(job)
+            await session.commit()
+            await session.refresh(job)
+            job_id = job.id
+
+        (tmp_path / "doc.md").write_text("# API\nSome content.")
+
+        import app.api.ai as ai_module
+        from app.ai.client import LLMAPIError
+
+        ai_module._index_cache.clear()
+
+        mock_client = MagicMock()
+        mock_client.complete = AsyncMock(side_effect=LLMAPIError("rate limit exceeded"))
+        ai_module._llm_client = mock_client
+
+        resp = await client.post(
+            "/api/ai/chat",
+            json={"question": "API info", "job_id": job_id},
+        )
+        assert resp.status_code == 502
+        assert "AI service error" in resp.json()["detail"]
+
+        ai_module._llm_client = None
+
+    async def test_chat_rejects_incomplete_job(self, client: AsyncClient, tmp_path: Path) -> None:
+        import app.storage.database as db_module
+
+        async with db_module.async_session() as session:
+            job = ScrapeJob(
+                url="https://example.com",
+                status=JobStatus.SCRAPING,
+                output_dir=str(tmp_path),
+            )
+            session.add(job)
+            await session.commit()
+            await session.refresh(job)
+            job_id = job.id
+
+        resp = await client.post(
+            "/api/ai/chat",
+            json={"question": "What is the API?", "job_id": job_id},
+        )
+        assert resp.status_code == 400
+        assert "not complete" in resp.json()["detail"].lower()
+
+    async def test_chat_validates_top_k_bounds(self, client: AsyncClient) -> None:
+        resp = await client.post(
+            "/api/ai/chat",
+            json={"question": "test", "job_id": "some-id", "top_k": 0},
+        )
+        assert resp.status_code == 422
+
+        resp = await client.post(
+            "/api/ai/chat",
+            json={"question": "test", "job_id": "some-id", "top_k": 25},
+        )
+        assert resp.status_code == 422
