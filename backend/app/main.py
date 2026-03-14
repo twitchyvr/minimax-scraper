@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(
     title="minimax-scraper",
     description="Markdown documentation scraper with OS-like browser UI",
-    version="0.1.0",
+    version="0.2.1",
     lifespan=lifespan,
 )
 

@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     rate_limit_rps: float = 5.0
     max_concurrent: int = 5
     max_retries: int = 3
-    user_agent: str = "minimax-scraper/0.1.0 (documentation archiver)"
+    user_agent: str = "minimax-scraper/0.2.1 (documentation archiver)"
 
     # AI (MiniMax M2.5 via OpenAI-compatible API)
     minimax_api_key: str = ""

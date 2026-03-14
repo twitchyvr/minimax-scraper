@@ -53,7 +53,7 @@ impl Default for AppState {
             file_tree: Vec::new(),
             selected_file: None,
             preview_content: None,
-            log_messages: vec!["MiniMax Scraper v0.1.0 ready.".to_string()],
+            log_messages: vec!["MiniMax Scraper v0.2.1 ready.".to_string()],
         }
     }
 }

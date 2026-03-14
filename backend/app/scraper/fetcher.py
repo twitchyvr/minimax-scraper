@@ -76,7 +76,7 @@ class Fetcher:
         rate_limit: float = 5.0,
         max_concurrent: int = 5,
         max_retries: int = 3,
-        user_agent: str = "minimax-scraper/0.1.0",
+        user_agent: str = "minimax-scraper/0.2.1",
         timeout: float = 30.0,
     ) -> None:
         self.rate_limiter = TokenBucket(rate=rate_limit)
