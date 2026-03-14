@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-03-14
+
 ### Added
 - Async LLM client wrapper for MiniMax M2.5 via OpenAI-compatible API (#22)
 - RAG-based Q&A chat module with BM25 search over scraped documentation corpus (#24)
