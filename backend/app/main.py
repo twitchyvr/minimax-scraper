@@ -6,6 +6,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.browse import router as browse_router
+from app.api.jobs import router as jobs_router
+from app.api.ws import router as ws_router
 from app.config import settings
 from app.models.schemas import HealthResponse
 from app.storage.database import init_db
@@ -33,6 +36,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(jobs_router)
+app.include_router(browse_router)
+app.include_router(ws_router)
 
 
 @app.get("/api/health", response_model=HealthResponse)
