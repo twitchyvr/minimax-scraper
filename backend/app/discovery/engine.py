@@ -48,7 +48,7 @@ async def discover(
         else httpx.AsyncClient(
             timeout=httpx.Timeout(30.0),
             follow_redirects=True,
-            headers={"User-Agent": "minimax-scraper/0.1.0 (documentation archiver)"},
+            headers={"User-Agent": "minimax-scraper/0.2.1 (documentation archiver)"},
         )
     )
 
