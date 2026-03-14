@@ -92,11 +92,11 @@ async def scrape(
     progress = ScrapeProgress(total=len(discovery.pages))
 
     try:
-        # Fetch all pages concurrently (rate-limited by fetcher)
+        # Fetch pages concurrently, processing each as it completes for
+        # real-time progress reporting instead of waiting for all to finish.
         urls = [p.url for p in discovery.pages]
-        fetch_results = await effective_fetcher.fetch_many(urls)
 
-        for fetch_result in fetch_results:
+        async for fetch_result in effective_fetcher.fetch_stream(urls):
             org = url_to_org.get(fetch_result.url)
             local_path = org.local_path if org else "unknown.md"
             section = org.section if org else ""
