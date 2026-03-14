@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frontend compile error on stable Rust: replaced unstable `let_chains` syntax with tuple pattern match in explorer.rs (#32)
 - Backend `pip install -e '.[dev]'` failure: excluded `output/` from setuptools package discovery (#33)
 - Added `types-defusedxml` to dev dependencies for mypy --strict compatibility (#33)
+- AI chat endpoint returns 502 on LLM API errors instead of unhandled 500 (#37)
+- AI chat endpoint rejects non-complete jobs (400) to prevent partial corpus indexing (#37)
+- Added 3 new AI API tests: LLM error handling, job status validation, top_k bounds (154 total) (#37)
 
 ## [0.2.0] — 2026-03-14
 
