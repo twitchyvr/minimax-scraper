@@ -142,9 +142,7 @@ class CorpusIndex:
                 term_tf = tf[term]
                 idf = self.idf.get(term, 0.0)
                 numerator = term_tf * (k1 + 1)
-                denominator = term_tf + k1 * (
-                    1 - b + b * chunk_len / self.avg_chunk_len
-                )
+                denominator = term_tf + k1 * (1 - b + b * chunk_len / self.avg_chunk_len)
                 score += idf * numerator / denominator
 
             if score > 0:

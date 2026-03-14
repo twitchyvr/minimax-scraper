@@ -82,6 +82,31 @@ class WsMessage(BaseModel):
     output_dir: str | None = None
 
 
+class ChatRequest(BaseModel):
+    """Request to ask a question about scraped documentation."""
+
+    question: str = Field(min_length=1, max_length=2000)
+    job_id: str
+    top_k: int = Field(default=5, ge=1, le=20)
+
+
+class ChatMessageResponse(BaseModel):
+    """A single message in chat history."""
+
+    role: str
+    content: str
+
+
+class ChatResponse(BaseModel):
+    """Response from the AI chat."""
+
+    answer: str
+    sources: list[str]
+    model: str = ""
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+
+
 class HealthResponse(BaseModel):
     """Health check response."""
 

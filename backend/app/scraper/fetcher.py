@@ -152,9 +152,7 @@ class Fetcher:
         tasks = [self.fetch(url) for url in urls]
         return list(await asyncio.gather(*tasks))
 
-    async def fetch_stream(
-        self, urls: list[str]
-    ) -> collections.abc.AsyncIterator[FetchResult]:
+    async def fetch_stream(self, urls: list[str]) -> collections.abc.AsyncIterator[FetchResult]:
         """Fetch URLs concurrently, yielding results as each completes.
 
         Unlike fetch_many (which blocks until ALL fetches finish), this
