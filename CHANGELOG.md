@@ -24,3 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - sitemap.xml parser with defusedxml, recursive sitemap index resolution, segment-aware path filtering
 - Discovery engine orchestrator with automatic client management and strategy fallback
 - 41 discovery tests covering parsers, HTTP mocking, edge cases, and live E2E validation
+- Scrape engine with full pipeline: discover → fetch → extract → organize → write (#3)
+- Async HTTP fetcher with token-bucket rate limiting, semaphore concurrency, exponential backoff retries
+- SSRF protection: URL scheme validation (only http/https allowed)
+- HTML→markdown extractor with custom MarkdownConverter for code blocks, callouts, tables
+- Directory structure organizer with segment-aware sanitization and common prefix stripping
+- Scrape engine orchestrator with path traversal protection and typed async progress callback
+- 33 scraper tests covering fetcher, extractor, and organizer modules
+- E2E validated against live MiniMax docs (3 pages scraped with correct structure)

@@ -26,11 +26,11 @@ The backend scraping engine is under active development:
 
 - [x] **Backend scaffold** — FastAPI, SQLAlchemy async models, Pydantic schemas, config
 - [x] **Discovery engine** — llms.txt parser, sitemap.xml parser (with recursive index resolution), engine orchestrator
-- [ ] **Scrape engine** — Fetcher, HTML→markdown extractor, directory organizer
+- [x] **Scrape engine** — Async fetcher (rate limiting, retries, SSRF protection), HTML→markdown extractor, directory organizer, path traversal protection
 - [ ] **REST API + WebSocket** — Job management, file browsing, real-time progress
 - [ ] **Frontend** — Rust/Dioxus WASM OS-like UI
 
-**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt in under 1 second.
+**Tested live**: Discovery engine found **156 pages** on `platform.minimax.io` via llms.txt. Scrape engine successfully fetched and converted 3 pages to clean markdown with correct directory structure.
 
 ## Quick Start
 
@@ -54,7 +54,7 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Run tests (41 passing)
+# Run tests (74 passing)
 pytest
 
 # Type check
