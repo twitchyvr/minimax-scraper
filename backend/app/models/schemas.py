@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from enum import StrEnum
+from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl, computed_field
 
@@ -76,7 +77,7 @@ class WsMessageType(StrEnum):
 class WsProgressMessage(BaseModel):
     """WebSocket progress update during scraping."""
 
-    type: str = WsMessageType.PROGRESS
+    type: Literal["progress"] = "progress"
     job_id: str
     scraped: int
     total: int
@@ -86,9 +87,8 @@ class WsProgressMessage(BaseModel):
 class WsCompleteMessage(BaseModel):
     """WebSocket job completion notification."""
 
-    type: str = WsMessageType.COMPLETE
+    type: Literal["complete"] = "complete"
     job_id: str
-    status: str = "complete"
     total_pages: int
     output_dir: str
 
@@ -96,7 +96,7 @@ class WsCompleteMessage(BaseModel):
 class WsErrorMessage(BaseModel):
     """WebSocket job error notification."""
 
-    type: str = WsMessageType.ERROR
+    type: Literal["error"] = "error"
     job_id: str
     message: str
 

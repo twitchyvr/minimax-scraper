@@ -85,13 +85,13 @@ class TestWsMessageTypes:
         assert data["current_url"] == "https://example.com"
 
     def test_complete_message_serialization(self) -> None:
-        """WsCompleteMessage serializes with status defaulting to 'complete'."""
+        """WsCompleteMessage serializes with correct type and fields."""
         msg = WsCompleteMessage(job_id="job-2", total_pages=42, output_dir="/output/job-2")
         data = msg.model_dump()
         assert data["type"] == "complete"
-        assert data["status"] == "complete"
         assert data["total_pages"] == 42
         assert data["output_dir"] == "/output/job-2"
+        assert "status" not in data  # removed — Rust side hardcodes this
 
     def test_error_message_serialization(self) -> None:
         """WsErrorMessage serializes with type and message."""
