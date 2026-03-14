@@ -12,7 +12,14 @@ from sqlalchemy.orm import selectinload
 from app.config import settings
 from app.discovery.engine import discover
 from app.models.db import DiscoveredUrl, DiscoveryMethod, JobStatus, Page, PageStatus, ScrapeJob
-from app.models.schemas import PageResponse, ScrapeJobCreate, ScrapeJobResponse
+from app.models.schemas import (
+    PageResponse,
+    ScrapeJobCreate,
+    ScrapeJobResponse,
+    WsCompleteMessage,
+    WsErrorMessage,
+    WsProgressMessage,
+)
 from app.scraper.engine import ScrapeProgress, scrape
 from app.scraper.fetcher import Fetcher
 from app.storage.database import get_session
@@ -162,13 +169,12 @@ async def _run_job(job_id: str, url: str, rate_limit: float | None) -> None:
 
                 await broadcast(
                     job_id,
-                    {
-                        "type": "progress",
-                        "job_id": job_id,
-                        "scraped": progress.completed,
-                        "total": progress.total,
-                        "current_url": progress.current_url,
-                    },
+                    WsProgressMessage(
+                        job_id=job_id,
+                        scraped=progress.completed,
+                        total=progress.total,
+                        current_url=progress.current_url,
+                    ).model_dump(),
                 )
 
             fetcher = Fetcher(
@@ -211,13 +217,11 @@ async def _run_job(job_id: str, url: str, rate_limit: float | None) -> None:
 
             await broadcast(
                 job_id,
-                {
-                    "type": "complete",
-                    "job_id": job_id,
-                    "status": "complete",
-                    "total_pages": scrape_result.total,
-                    "output_dir": str(output_dir),
-                },
+                WsCompleteMessage(
+                    job_id=job_id,
+                    total_pages=scrape_result.total,
+                    output_dir=str(output_dir),
+                ).model_dump(),
             )
 
         except asyncio.CancelledError:
@@ -234,11 +238,10 @@ async def _run_job(job_id: str, url: str, rate_limit: float | None) -> None:
             safe_msg = f"Scrape failed: {type(e).__name__}"
             await broadcast(
                 job_id,
-                {
-                    "type": "error",
-                    "job_id": job_id,
-                    "message": safe_msg,
-                },
+                WsErrorMessage(
+                    job_id=job_id,
+                    message=safe_msg,
+                ).model_dump(),
             )
         finally:
             _running_tasks.pop(job_id, None)
