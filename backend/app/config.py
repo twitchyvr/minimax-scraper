@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     # AI (MiniMax M2.5 via OpenAI-compatible API)
     minimax_api_key: str = ""
     minimax_base_url: str = "https://api.minimax.chat/v1"
-    minimax_model: str = "MiniMax-M1"
+    minimax_model: str = "MiniMax-M2.5"
 
     # CORS
     cors_origins: list[str] = ["http://localhost:8080", "http://127.0.0.1:8080"]
