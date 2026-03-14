@@ -3,6 +3,7 @@
 mod api;
 mod app;
 mod components;
+mod hooks;
 mod state;
 
 fn main() {
