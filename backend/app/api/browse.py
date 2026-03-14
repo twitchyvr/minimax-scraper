@@ -13,6 +13,7 @@ from app.storage.database import get_session
 router = APIRouter(prefix="/api/browse", tags=["browse"])
 
 _MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB read limit
+_MAX_TREE_DEPTH = 20  # Prevent stack overflow from pathological directory nesting
 
 
 @router.get("/{job_id}/tree", response_model=list[FileTreeNode])
@@ -32,7 +33,7 @@ async def get_file_tree(
     if not output_path.is_dir():
         raise HTTPException(status_code=404, detail="Output directory not found on disk")
 
-    return _build_tree(output_path, output_path)
+    return _build_tree(output_path, output_path, depth=0)
 
 
 @router.get("/{job_id}/file")
@@ -56,6 +57,9 @@ async def get_file_content(
     if not file_path.is_relative_to(output_path.resolve()):
         raise HTTPException(status_code=403, detail="Path traversal rejected")
 
+    if file_path.is_symlink():
+        raise HTTPException(status_code=403, detail="Symlinks not allowed")
+
     if not file_path.is_file():
         raise HTTPException(status_code=404, detail="File not found")
 
@@ -66,8 +70,11 @@ async def get_file_content(
     return {"path": path, "content": content}
 
 
-def _build_tree(root: Path, current: Path) -> list[FileTreeNode]:
+def _build_tree(root: Path, current: Path, depth: int = 0) -> list[FileTreeNode]:
     """Recursively build a file tree from the filesystem."""
+    if depth > _MAX_TREE_DEPTH:
+        return []
+
     nodes: list[FileTreeNode] = []
     try:
         entries = sorted(current.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower()))
@@ -82,7 +89,7 @@ def _build_tree(root: Path, current: Path) -> list[FileTreeNode]:
         relative = str(entry.relative_to(root))
 
         if entry.is_dir():
-            children = _build_tree(root, entry)
+            children = _build_tree(root, entry, depth + 1)
             nodes.append(
                 FileTreeNode(
                     name=entry.name,
