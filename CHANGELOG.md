@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Client-side URL validation in scraper panel — disables button for invalid URLs, shows inline error (#35)
+- LRU eviction for AI corpus index cache — max 10 entries, oldest evicted at capacity (#39)
+
+### Changed
+- WebSocket messages use typed enums: `WsMessageType` StrEnum + `Literal` discriminators on backend, serde tagged enum on frontend (#36)
 
 ### Fixed
 - Frontend compile error on stable Rust: replaced unstable `let_chains` syntax with tuple pattern match in explorer.rs (#32)
