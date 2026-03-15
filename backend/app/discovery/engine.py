@@ -4,6 +4,7 @@ Tries discovery strategies in priority order:
 1. llms.txt (most structured)
 2. sitemap.xml (URL list, less metadata)
 3. Sidebar crawl (last resort, fragile)
+4. Single-page fallback (treats the submitted URL as the only page)
 """
 
 from dataclasses import dataclass, field
@@ -31,7 +32,8 @@ async def discover(
     """Discover all documentation pages on a site.
 
     Tries strategies in priority order: llms.txt → sitemap → sidebar crawl.
-    Returns as soon as one strategy succeeds.
+    Returns as soon as one strategy succeeds. Falls back to treating the
+    submitted URL as a single page if no strategy discovers pages.
 
     Args:
         base_url: Base URL of the documentation site.
@@ -73,7 +75,12 @@ async def discover(
             return result
 
         # Strategy 3: Sidebar crawl (TODO — implement in sidebar.py)
-        # For now, return empty result
+
+        # Fallback: treat the submitted URL itself as a single page to scrape.
+        # This allows users to scrape individual pages without needing the docs root.
+        result.pages = [DiscoveredPage(url=base_url, title="", section="")]
+        result.method = "single_page"
+        return result
 
     finally:
         if own_client:

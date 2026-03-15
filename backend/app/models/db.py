@@ -40,6 +40,7 @@ class DiscoveryMethod(enum.StrEnum):
     LLMS_TXT = "llms_txt"
     SITEMAP = "sitemap"
     SIDEBAR = "sidebar"
+    SINGLE_PAGE = "single_page"
 
 
 class ScrapeJob(Base):
