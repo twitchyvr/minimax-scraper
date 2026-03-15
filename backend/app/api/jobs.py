@@ -212,21 +212,38 @@ async def _run_job(job_id: str, url: str, rate_limit: float | None) -> None:
                     )
                 )
 
-            job.status = JobStatus.COMPLETE
             job.scraped_pages = scrape_result.succeeded
-            await session.commit()
 
-            # Broadcast completion
-            from app.api.ws import broadcast
+            if scrape_result.succeeded == 0:
+                # All page fetches failed — mark job as failed
+                job.status = JobStatus.FAILED
+                job.error_message = f"All {scrape_result.failed} page(s) failed to scrape"
+                await session.commit()
 
-            await broadcast(
-                job_id,
-                WsCompleteMessage(
-                    job_id=job_id,
-                    total_pages=scrape_result.total,
-                    output_dir=str(output_dir),
-                ).model_dump(),
-            )
+                from app.api.ws import broadcast
+
+                await broadcast(
+                    job_id,
+                    WsErrorMessage(
+                        job_id=job_id,
+                        message=job.error_message,
+                    ).model_dump(),
+                )
+            else:
+                job.status = JobStatus.COMPLETE
+                await session.commit()
+
+                # Broadcast completion
+                from app.api.ws import broadcast
+
+                await broadcast(
+                    job_id,
+                    WsCompleteMessage(
+                        job_id=job_id,
+                        total_pages=scrape_result.succeeded,
+                        output_dir=str(output_dir),
+                    ).model_dump(),
+                )
 
         except asyncio.CancelledError:
             job.status = JobStatus.CANCELLED
