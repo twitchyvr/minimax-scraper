@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SINGLE_PAGE` variant added to `DiscoveryMethod` enum (#44)
 
 ### Fixed
+- Frontend job status stuck at PENDING — added REST polling fallback when WebSocket fails (#48)
 - Frontend CSS not loading — added missing `asset_dir = "assets"` to Dioxus.toml (#45)
 - Version strings aligned to 0.2.1 across all backend and frontend files (#45)
 - Health check test updated to expect v0.2.1 (#45)
