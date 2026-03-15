@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Clickable job cards — click a completed job to browse its files in Explorer/Preview panels (#52)
+- Visual feedback for selected/browsable jobs: purple border, hover effects (#52)
 - Single-page fallback in discovery engine — when no strategy finds pages, treats the submitted URL as a single page to scrape (#44)
 - `SINGLE_PAGE` variant added to `DiscoveryMethod` enum (#44)
 
