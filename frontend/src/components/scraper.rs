@@ -107,11 +107,15 @@ pub fn ScraperPanel() -> Element {
 }
 
 /// Individual job card with progress and cancel button.
+/// Clicking a completed job (with scraped pages) sets it as the active
+/// job for the Explorer and Preview panels.
 #[component]
 fn JobCard(job: crate::api::types::JobResponse) -> Element {
     let mut state = use_context::<Signal<AppState>>();
     let status_class = format!("scraper-job-status status-{}", job.status);
     let is_active = matches!(job.status.as_str(), "pending" | "discovering" | "scraping");
+    let is_browsable = job.status == "complete" && job.scraped_pages > 0;
+    let is_selected = state.read().active_job_id.as_deref() == Some(job.id.as_str());
     let show_progress = job.total_pages > 0;
     let progress_style = format!("width: {}%", job.progress_pct);
     let progress_label = format!(
@@ -119,6 +123,7 @@ fn JobCard(job: crate::api::types::JobResponse) -> Element {
         job.scraped_pages, job.total_pages, job.progress_pct
     );
     let job_id = job.id.clone();
+    let job_id_for_select = job.id.clone();
 
     let on_cancel = move |_| {
         let jid = job_id.clone();
@@ -141,10 +146,30 @@ fn JobCard(job: crate::api::types::JobResponse) -> Element {
         });
     };
 
+    let on_select = move |_| {
+        if is_browsable {
+            let jid = job_id_for_select.clone();
+            state.write().active_job_id = Some(jid.clone());
+            state
+                .write()
+                .log_messages
+                .push(format!("[INFO] Selected job {jid} for browsing"));
+        }
+    };
+
+    let card_class = if is_selected && is_browsable {
+        "scraper-job scraper-job-selected"
+    } else if is_browsable {
+        "scraper-job scraper-job-browsable"
+    } else {
+        "scraper-job"
+    };
+
     rsx! {
         div {
-            class: "scraper-job",
+            class: "{card_class}",
             key: "{job.id}",
+            onclick: on_select,
             div { class: "scraper-job-header",
                 span { class: "scraper-job-url", "{job.url}" }
                 div { class: "scraper-job-actions",
