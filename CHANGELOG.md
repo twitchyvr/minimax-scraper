@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Single-page fallback in discovery engine — when no strategy finds pages, treats the submitted URL as a single page to scrape (#44)
+- `SINGLE_PAGE` variant added to `DiscoveryMethod` enum (#44)
+
 ### Fixed
 - Frontend CSS not loading — added missing `asset_dir = "assets"` to Dioxus.toml (#45)
 - Version strings aligned to 0.2.1 across all backend and frontend files (#45)
