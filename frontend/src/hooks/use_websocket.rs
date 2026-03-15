@@ -5,7 +5,7 @@ use futures_util::StreamExt;
 use gloo_net::websocket::{Message, futures::WebSocket};
 use gloo_timers::future::TimeoutFuture;
 
-use crate::api::types::WsMessage;
+use crate::api::{client, types::WsMessage};
 use crate::state::app_state::AppState;
 
 /// Maximum number of log messages to keep in state.
@@ -56,20 +56,33 @@ pub fn use_job_websocket(job_id: Option<String>) {
                                 );
                             }
 
-                            // Check if the job is done — no need to reconnect
-                            let should_reconnect = {
-                                let s = state.read();
-                                s.jobs.iter().any(|j| {
-                                    j.id == job_id
-                                        && !matches!(
-                                            j.status.as_str(),
-                                            "complete" | "failed" | "cancelled"
-                                        )
-                                })
-                            };
-
-                            if !should_reconnect {
-                                break;
+                            // WS closed — poll REST API for current job status
+                            // before deciding whether to reconnect. This handles
+                            // the case where the job completed while WS was down.
+                            if let Ok(job) = client::get_job(&job_id).await {
+                                let is_terminal = matches!(
+                                    job.status.as_str(),
+                                    "complete" | "failed" | "cancelled"
+                                );
+                                // Update the job in state from the REST response
+                                let mut s = state.write();
+                                if let Some(j) = s.jobs.iter_mut().find(|j| j.id == job_id) {
+                                    j.status = job.status.clone();
+                                    j.total_pages = job.total_pages;
+                                    j.scraped_pages = job.scraped_pages;
+                                    j.progress_pct = job.progress_pct;
+                                    j.output_dir = job.output_dir.clone();
+                                    j.error_message = job.error_message.clone();
+                                    j.discovery_method = job.discovery_method.clone();
+                                }
+                                if is_terminal {
+                                    s.log_messages.push(format!(
+                                        "[INFO] Job {job_id} status: {} (via REST poll)",
+                                        job.status
+                                    ));
+                                    drop(s);
+                                    break;
+                                }
                             }
                         }
                         Err(e) => {
