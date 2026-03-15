@@ -125,6 +125,9 @@ async def _run_job(job_id: str, url: str, rate_limit: float | None) -> None:
 
             discovery = await discover(url)
 
+            # Defensive guard: discover() should always return at least one page
+            # (the single-page fallback), but keep this in case a future strategy
+            # is added that can return an empty result.
             if not discovery.pages:
                 job.status = JobStatus.FAILED
                 job.error_message = "No pages discovered"
@@ -136,6 +139,7 @@ async def _run_job(job_id: str, url: str, rate_limit: float | None) -> None:
                 "llms_txt": DiscoveryMethod.LLMS_TXT,
                 "sitemap": DiscoveryMethod.SITEMAP,
                 "sidebar": DiscoveryMethod.SIDEBAR,
+                "single_page": DiscoveryMethod.SINGLE_PAGE,
             }
             job.discovery_method = method_map.get(discovery.method)
             job.total_pages = len(discovery.pages)

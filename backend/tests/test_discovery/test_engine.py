@@ -63,14 +63,15 @@ class TestDiscover:
         assert result.method == "sitemap"
         assert len(result.pages) == 3  # filtered to /docs
 
-    async def test_returns_empty_when_nothing_found(self) -> None:
-        """When no discovery method works, returns empty result."""
+    async def test_falls_back_to_single_page_when_nothing_found(self) -> None:
+        """When no discovery method works, falls back to single-page scrape."""
         transport = httpx.MockTransport(lambda req: httpx.Response(404))
         async with httpx.AsyncClient(transport=transport) as client:
-            result = await discover("https://example.com", client=client)
+            result = await discover("https://example.com/docs/guide", client=client)
 
-        assert result.method == "none"
-        assert result.pages == []
+        assert result.method == "single_page"
+        assert len(result.pages) == 1
+        assert result.pages[0].url == "https://example.com/docs/guide"
 
     async def test_creates_own_client_if_none(self) -> None:
         """When no client is passed, creates and closes its own."""
@@ -81,8 +82,8 @@ class TestDiscover:
         with patch("app.discovery.engine.httpx.AsyncClient", return_value=mock_client):
             result = await discover("https://example.com", client=None)
 
-        assert result.method == "none"
-        assert result.pages == []
+        assert result.method == "single_page"
+        assert len(result.pages) == 1
 
     async def test_path_filter_passed_to_sitemap(self, sitemap_xml: str) -> None:
         """Custom path_filter is forwarded to sitemap parser."""
