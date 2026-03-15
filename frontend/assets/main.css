@@ -255,6 +255,23 @@ html, body {
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     margin-bottom: 6px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.scraper-job-browsable {
+    cursor: pointer;
+}
+
+.scraper-job-browsable:hover {
+    border-color: var(--text-accent);
+    background: var(--bg-hover);
+}
+
+.scraper-job-selected {
+    border-color: var(--accent);
+    border-width: 2px;
+    background: rgba(83, 52, 131, 0.15);
+    cursor: pointer;
 }
 
 .scraper-job-header {
